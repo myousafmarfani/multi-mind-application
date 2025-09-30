@@ -1,0 +1,12 @@
+[project]
+name = "multimind"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.117.1",
+    "fastmcp>=2.12.4",
+    "openai>=1.109.1",
+    "openai-agents>=0.3.2",
+]

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiMind Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="icon" href="assets/all_models.jpg" type="image/jpeg">
+</head>
+<body>
+    
+    <!-- Chat Overlay -->
+    <div class="chat-overlay" id="chatOverlay"></div>
+
+    <div class="chat-container">
+
+        <!-- Chat Bots Grid -->
+        <div class="chat-grid">
+            <!-- Gemini Chat -->
+            <div class="chat-bot" id="gemini-chat">
+                <div class="chat-bot-header">
+                    <div class="bot-avatar gemini-avatar">
+                        <img src="assets/gemini_logo.png" alt="Gemini" class="bot-logo">
+                    </div>
+                    <div>
+                        <div class="bot-name">Gemini</div>
+                        <div class="bot-status online" id="gemini-status">Online</div>
+                    </div>
+                    <button class="maximize-btn" data-chat="gemini-chat" title="Maximize">
+                        <span class="maximize-icon">⛶</span>
+                    </button>
+                </div>
+                <div class="chat-messages" id="gemini-messages">
+                </div>
+            </div>
+
+            <!-- ChatGPT Chat -->
+            <div class="chat-bot" id="chatgpt-chat">
+                <div class="chat-bot-header">
+                    <div class="bot-avatar chatgpt-avatar">
+                        <img src="assets/chatgpt_logo.jpg" alt="ChatGPT" class="bot-logo">
+                    </div>
+                    <div>
+                        <div class="bot-name">ChatGPT</div>
+                        <div class="bot-status online" id="chatgpt-status">Online</div>
+                    </div>
+                    <button class="maximize-btn" data-chat="chatgpt-chat" title="Maximize">
+                        <span class="maximize-icon">⛶</span>
+                    </button>
+                </div>
+                <div class="chat-messages" id="chatgpt-messages">
+                </div>
+            </div>
+
+            <!-- Claude Chat -->
+            <div class="chat-bot" id="claude-chat">
+                <div class="chat-bot-header">
+                    <div class="bot-avatar claude-avatar">
+                        <img src="assets/claude_logo.png" alt="Claude" class="bot-logo">
+                    </div>
+                    <div>
+                        <div class="bot-name">Claude</div>
+                        <div class="bot-status online" id="claude-status">Online</div>
+                    </div>
+                    <button class="maximize-btn" data-chat="claude-chat" title="Maximize">
+                        <span class="maximize-icon">⛶</span>
+                    </button>
+                </div>
+                <div class="chat-messages" id="claude-messages">
+                </div>
+            </div>
+
+            <!-- Grok Chat -->
+            <div class="chat-bot" id="grok-chat">
+                <div class="chat-bot-header">
+                    <div class="bot-avatar grok-avatar">
+                        <img src="assets/grok_logo.jpeg" alt="Grok" class="bot-logo">
+                    </div>
+                    <div>
+                        <div class="bot-name">Grok</div>
+                        <div class="bot-status online" id="grok-status">Online</div>
+                    </div>
+                    <button class="maximize-btn" data-chat="grok-chat" title="Maximize">
+                        <span class="maximize-icon">⛶</span>
+                    </button>
+                </div>
+                <div class="chat-messages" id="grok-messages">
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section" id="inputSection">
+            <div class="drag-handle" id="dragHandle"></div>
+            
+            <div class="input-container">
+                <textarea 
+                    class="input-field" 
+                    id="messageInput" 
+                    placeholder="Type your message to all AI models..."
+                    rows="1"
+                ></textarea>
+                <div class="button-group">
+                    <!-- Chatbot Selection Dropdown -->
+                    <div class="dropdown-container" id="chatbotSelector">
+                        <button class="dropdown-toggle" id="dropdownToggle">
+                            <img src="assets/all_models.jpg" alt="All Models" class="selected-icon">
+                            <span class="selected-text">All Models</span>
+                            <span class="dropdown-arrow">▲</span>
+                        </button>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <div class="dropdown-option active" data-value="all">
+                                <img src="assets/all_models.jpg" alt="All Models" class="option-icon">
+                                <span class="option-text">All Models</span>
+                                <span class="option-shortcut">Ctrl+1</span>
+                            </div>
+                            <div class="dropdown-option" data-value="gemini">
+                                <img src="assets/gemini_logo.png" alt="Gemini" class="option-icon">
+                                <span class="option-text">Gemini</span>
+                                <span class="option-shortcut">Ctrl+2</span>
+                            </div>
+                            <div class="dropdown-option" data-value="chatgpt">
+                                <img src="assets/chatgpt_logo.jpg" alt="ChatGPT" class="option-icon">
+                                <span class="option-text">ChatGPT</span>
+                                <span class="option-shortcut">Ctrl+3</span>
+                            </div>
+                            <div class="dropdown-option" data-value="claude">
+                                <img src="assets/claude_logo.png" alt="Claude" class="option-icon">
+                                <span class="option-text">Claude</span>
+                                <span class="option-shortcut">Ctrl+4</span>
+                            </div>
+                            <div class="dropdown-option" data-value="grok">
+                                <img src="assets/grok_logo.jpeg" alt="Grok" class="option-icon">
+                                <span class="option-text">Grok</span>
+                                <span class="option-shortcut">Ctrl+5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="send-button" id="sendButton">
+                        <span id="sendButtonText">Send to All</span>
+                    </button>
+                    <button class="clear-button" id="clearButton">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="js/new.js"></script>
+</body>
+</html>
