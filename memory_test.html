@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Test</title>
+</head>
+<body>
+    <h1>Memory Test</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        async function testMemory() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            // Test conversation history
+            const conversationHistory = [
+                { role: 'user', content: 'My name is John and I like pizza' },
+                { role: 'assistant', content: 'Nice to meet you John!' }
+            ];
+            
+            try {
+                const response = await fetch('http://localhost:8002/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: 'What was my previous question?',
+                        conversationHistory: conversationHistory
+                    })
+                });
+                
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = `
+                    <h2>Test Results:</h2>
+                    <p><strong>Request sent:</strong></p>
+                    <pre>${JSON.stringify({
+                        prompt: 'What was my previous question?',
+                        conversationHistory: conversationHistory
+                    }, null, 2)}</pre>
+                    <p><strong>Response:</strong></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                console.log('Response:', data);
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Run test when page loads
+        testMemory();
+    </script>
+</body>
+</html>

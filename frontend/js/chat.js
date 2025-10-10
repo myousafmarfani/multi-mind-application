@@ -585,6 +585,9 @@ class MultiMindChat {
                 Prism.highlightAllUnder(messageDiv);
             }
             
+            // Add click handlers for custom links
+            this.setupCustomLinkHandlers(messageDiv);
+            
             // Add animation with a more reliable approach
             requestAnimationFrame(() => {
                 messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
@@ -800,6 +803,21 @@ class MultiMindChat {
         // Format inline code
         formatted = formatted.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
         
+        // First, handle markdown-style links and convert them to plain URLs
+        formatted = formatted.replace(/\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, (match, text, url) => {
+            return url; // Just return the URL, removing the markdown formatting
+        });
+        
+        // Also handle cases where URLs are wrapped in brackets
+        formatted = formatted.replace(/\[(https?:\/\/[^\]]+)\]/g, (match, url) => {
+            return url; // Just return the URL, removing the brackets
+        });
+        
+        // Format URLs with custom clickable links (after cleaning markdown)
+        formatted = formatted.replace(/(https?:\/\/[^\s<>"{}|\\^`\[\]]+)/g, (match, url) => {
+            return `<span class="custom-link" data-url="${url}">${url}</span>`;
+        });
+        
         // Format bold text
         formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
         
@@ -854,6 +872,137 @@ class MultiMindChat {
             'text': 'Code'
         };
         return languageMap[lang.toLowerCase()] || lang.toUpperCase();
+    }
+    
+    setupCustomLinkHandlers(container) {
+        const customLinks = container.querySelectorAll('.custom-link');
+        customLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.showLinkOptionsMenu(e.target, e.target.dataset.url);
+            });
+        });
+    }
+    
+    showLinkOptionsMenu(linkElement, url) {
+        // Remove any existing menu
+        const existingMenu = document.querySelector('.link-options-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+        
+        // Create options menu
+        const menu = document.createElement('div');
+        menu.className = 'link-options-menu';
+        
+        // Copy Link option
+        const copyOption = document.createElement('div');
+        copyOption.className = 'link-option';
+        copyOption.innerHTML = '<span class="link-option-icon">📋</span><span class="link-option-text">Copy Link</span>';
+        copyOption.addEventListener('click', () => {
+            this.copyLinkToClipboard(url);
+            menu.remove();
+        });
+        
+        // Open Link option
+        const openOption = document.createElement('div');
+        openOption.className = 'link-option';
+        openOption.innerHTML = '<span class="link-option-icon">🔗</span><span class="link-option-text">Open Link</span>';
+        openOption.addEventListener('click', () => {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            menu.remove();
+        });
+        
+        menu.appendChild(copyOption);
+        menu.appendChild(openOption);
+        
+        // Position menu near the clicked link
+        const rect = linkElement.getBoundingClientRect();
+        menu.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+        menu.style.left = rect.left + 'px';
+        
+        // Add to page
+        document.body.appendChild(menu);
+        
+        // Show menu with animation
+        requestAnimationFrame(() => {
+            menu.classList.add('show');
+        });
+        
+        // Close menu when clicking outside
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target) && e.target !== linkElement) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener('click', closeMenu);
+        }, 100);
+        
+        // Close menu on escape key
+        const closeOnEscape = (e) => {
+            if (e.key === 'Escape') {
+                menu.remove();
+                document.removeEventListener('keydown', closeOnEscape);
+            }
+        };
+        document.addEventListener('keydown', closeOnEscape);
+    }
+    
+    async copyLinkToClipboard(url) {
+        try {
+            await navigator.clipboard.writeText(url);
+            this.showLinkFeedback('Link copied to clipboard! 📋');
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                this.showLinkFeedback('Link copied to clipboard! 📋');
+            } catch (err) {
+                this.showLinkFeedback('Failed to copy link');
+            }
+            document.body.removeChild(textArea);
+        }
+    }
+    
+    showLinkFeedback(message) {
+        // Create feedback notification
+        const feedback = document.createElement('div');
+        feedback.className = 'link-feedback';
+        feedback.textContent = message;
+        
+        // Position at bottom right
+        feedback.style.position = 'fixed';
+        feedback.style.bottom = '100px';
+        feedback.style.right = '20px';
+        feedback.style.zIndex = '10000';
+        
+        document.body.appendChild(feedback);
+        
+        // Show with animation
+        requestAnimationFrame(() => {
+            feedback.classList.add('show');
+        });
+        
+        // Hide and remove after 3 seconds
+        setTimeout(() => {
+            feedback.classList.remove('show');
+            setTimeout(() => {
+                if (feedback.parentNode) {
+                    feedback.parentNode.removeChild(feedback);
+                }
+            }, 300);
+        }, 3000);
     }
     
     createLoadingMessage() {
