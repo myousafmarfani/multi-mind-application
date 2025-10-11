@@ -24,7 +24,7 @@ API_KEY = os.getenv("OPENAI_GPT_OSS")
 
 if API_KEY:
     external_client = AsyncOpenAI(
-        api_key=API_KEY,
+        api_key="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",
         base_url="https://openrouter.ai/api/v1",
     )
 
