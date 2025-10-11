@@ -12,7 +12,7 @@ load_dotenv()
 API_KEY = os.getenv("LLAMA_API_KEY")  # Use Gemini key for now
 
 external_client = AsyncOpenAI(
-    api_key=API_KEY,
+    api_key="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",
     base_url="https://openrouter.ai/api/v1",
 )
 

@@ -12,7 +12,7 @@ load_dotenv()
 API_KEY = os.getenv("DEEPSEEK_API_KEY")  # Use Gemini key for now
 
 external_client = AsyncOpenAI(
-    api_key=API_KEY,
+    api_key="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",
     base_url="https://openrouter.ai/api/v1",
 )
 
