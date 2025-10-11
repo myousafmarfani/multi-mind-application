@@ -24,7 +24,7 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 
 if API_KEY:
     external_client = AsyncOpenAI(
-        api_key="AIzaSyCqwuqDETRE8PWjntKQOYdtoHaT1ON9fKE",
+        api_key=API_KEY,
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
     )
 
