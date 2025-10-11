@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/gemini/health",
+      "dest": "/api/gemini?health=true"
+    },
+    {
+      "src": "/api/chatgpt/health", 
+      "dest": "/api/chatgpt?health=true"
+    },
+    {
+      "src": "/api/claude/health",
+      "dest": "/api/claude?health=true"
+    },
+    {
+      "src": "/api/grok/health",
+      "dest": "/api/grok?health=true"
+    },
+    {
+      "src": "/api/(gemini|chatgpt|claude|grok)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/frontend/index.html"
+    },
+    {
+      "src": "/chat",
+      "dest": "/frontend/chat.html"
+    },
+    {
+      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
+    }
+  ],
+  "functions": {
+    "api/*.py": {
+      "runtime": "python3.9"
+    }
+  }
+}

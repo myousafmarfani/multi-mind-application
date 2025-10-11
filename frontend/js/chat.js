@@ -2,17 +2,17 @@
 class MultiMindChat {
     constructor() {
         this.apiEndpoints = {
-            gemini: 'http://localhost:8001/chat',
-            chatgpt: 'http://localhost:8002/chat',
-            claude: 'http://localhost:8003/chat',
-            grok: 'http://localhost:8004/chat'
+            gemini: '/api/gemini',
+            chatgpt: '/api/chatgpt',
+            claude: '/api/claude',
+            grok: '/api/grok'
         };
         
         this.healthEndpoints = {
-            gemini: 'http://localhost:8001/health',
-            chatgpt: 'http://localhost:8002/health',
-            claude: 'http://localhost:8003/health',
-            grok: 'http://localhost:8004/health'
+            gemini: '/api/gemini/health',
+            chatgpt: '/api/chatgpt/health',
+            claude: '/api/claude/health',
+            grok: '/api/grok/health'
         };
         
         this.messageCount = 0;
