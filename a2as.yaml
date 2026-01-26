@@ -1,0 +1,198 @@
+manifest:
+  version: "0.1.2"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: myousuf-codes/multi-mind-application
+    source: https://github.com/myousuf-codes/multi-mind-application
+    branch: main
+    commit: "acdea42b"
+    scope: [api/grok.py, backend/gemini_llm.py, backend/chatgpt_llm.py, api/claude.py, backend/claude_llm.py, api/chatgpt.py,
+      api/models.py, api/gemini.py, backend/models.py, backend/grok_llm.py]
+  issued:
+    by: A2AS.org
+    at: '2026-01-26T16:11:00Z'
+  signatures:
+    digest: sha256:qJXwNblK5MGWmltCl9NBCeC3uKp6tN5Asev6emwKNvs
+    key: ed25519:Kp1B9ot_GSVXpFs4tlptvx3R7sB7-oSDsmPi0aHbR6w
+    sig: ed25519:CUAMwWqd18KFmsVLwvl6R5lXWenZ1iWlMC50yan7XUyReeXr76yYaSJVR_zlRuVuDcl5cMiTz50Es69xmTkZDg
+
+agents:
+  chatgpt.0:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: chatgpt_agent
+      name: ChatGPT
+      instance: chatgpt
+      instructions: [enhanced_instructions]
+  chatgpt.1:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: chatgpt_agent
+      name: ChatGPT
+      instance: chatgpt
+      instructions: [enhanced_instructions]
+  claude.0:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: claude_agent
+      name: Claude
+      instance: claude
+      instructions: [enhanced_instructions]
+  claude.1:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: claude_agent
+      name: Claude
+      instance: claude
+      instructions: [enhanced_instructions]
+  gemini.0:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: gemini_agent
+      name: Gemini
+      instance: gemini
+      instructions: [enhanced_instructions]
+  gemini.1:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: gemini_agent
+      name: Gemini
+      instance: gemini
+      instructions: [enhanced_instructions]
+  grok.0:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: grok_agent
+      name: Grok
+      instance: grok
+      instructions: [enhanced_instructions]
+  grok.1:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      function: grok_agent
+      name: Grok
+      instance: grok
+      instructions: [enhanced_instructions]
+
+models:
+  gpt-4.1:
+    type: default
+    agents: [grok.0, gemini.0, chatgpt.0, claude.0, claude.1, chatgpt.1, gemini.1, grok.1]
+
+imports:
+  Agent: agents.Agent
+  Any: typing.Any
+  asyncio: asyncio
+  AsyncOpenAI: agents.AsyncOpenAI
+  BaseModel: pydantic.BaseModel
+  ChatRequest: models.ChatRequest
+  ChatResponse: models.ChatResponse
+  CORSMiddleware: fastapi.middleware.cors.CORSMiddleware
+  Dict: typing.Dict
+  FastAPI: fastapi.FastAPI
+  HTTPException: fastapi.HTTPException
+  List: typing.List
+  load_dotenv: dotenv.load_dotenv
+  OpenAIChatCompletionsModel: agents.OpenAIChatCompletionsModel
+  Optional: typing.Optional
+  os: os
+  RunConfig: agents.RunConfig
+  Runner: agents.Runner
+  uvicorn: uvicorn
+
+functions:
+  chat_with_chatgpt:
+    type: async
+    module: api.chatgpt
+    args: [request]
+  chat_with_claude:
+    type: async
+    module: backend.claude_llm
+    args: [request]
+  chat_with_gemini:
+    type: async
+    module: api.gemini
+    args: [request]
+  chat_with_grok:
+    type: async
+    module: backend.grok_llm
+    args: [request]
+  chatgpt_agent:
+    type: async
+    module: api.chatgpt
+    args: [prompt, instructions, conversation_history, user_name]
+    params:
+      returns: str
+  claude_agent:
+    type: async
+    module: backend.claude_llm
+    args: [prompt, instructions, conversation_history, user_name]
+    params:
+      returns: str
+  gemini_agent:
+    type: async
+    module: api.gemini
+    args: [prompt, instructions, conversation_history, user_name]
+    params:
+      returns: str
+  grok_agent:
+    type: async
+    module: backend.grok_llm
+    args: [prompt, instructions, conversation_history, user_name]
+    params:
+      returns: str
+  health_check:
+    type: async
+    module: backend.grok_llm
+  improve_prompt:
+    type: async
+    module: backend.grok_llm
+    args: [request]
+
+variables:
+  DEEPSEEK_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [backend.chatgpt_llm, api.chatgpt]
+  GEMINI_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [backend.gemini_llm, api.gemini]
+  LLAMA_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [api.grok, backend.grok_llm]
+  OPENAI_GPT_OSS:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [api.claude, backend.claude_llm]
+
+networks:
+  generativelanguage.googleapis.com:
+    type: api
+    actions: [GET]
+    urls: [/v1beta/openai/]
+    protocols: [https]
+    ports: ["443"]
+    params:
+      links: [base_url]
+  openrouter.ai:
+    type: api
+    actions: [GET]
+    urls: [/api/v1]
+    protocols: [https]
+    ports: ["443"]
+    params:
+      links: [base_url]
